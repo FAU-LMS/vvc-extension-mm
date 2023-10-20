@@ -1,6 +1,6 @@
 # VVC Extension: Multi-Model 360-Degree Video Coding
 
-Code will be made available upon publication.
+Code will be made available by November 1st 2023.
 
 ## Usage
 
