@@ -1,0 +1,59 @@
+This software package is the reference software for JVET. The reference software (360Lib) includes 360 library and standalone 360 convert application.
+A software manual, which contains usage instructions, can be found in the "doc" subdirectory of this software package. 
+
+360Lib-13.1 software has dependency with VTM software. It can work with VTM-14.0/VTM-14.1. 
+1. VTM-14.0-360Lib-13.1 software preparation
+  1.1 check out VTM-14.0 ( https://vcgit.hhi.fraunhofer.de/jvet/VVCSoftware_VTM/tags/VTM-14.0 );
+      check out 360Lib-13.1( https://jvet.hhi.fraunhofer.de/svn/svn_360Lib/tags/360Lib-13.1 ); 
+  1.2 copy following directories (./360Lib-13.1) to ./VTM-14.0
+      1.2.1 copy source files:
+          copy ./360Lib-13.1/source/Lib/Lib360 to ./VTM-14.0/source/Lib/
+          copy ./360Lib-13.1/source/Lib/AppEncHelper360 to ./VTM-14.0/source/Lib/
+          copy ./360Lib-13.1/source/App/utils/App360Convert to ./VTM-14.0/source/App/utils/
+      1.2.2 copy configure files:
+          copy ./360Lib-13.1/cfg-360Lib to ./VTM-14.0/
+      
+  1.3 build VTM-14.0-360Lib-13.1 software: 
+      use CMake to generate makefile for Linux platform (check ./360Lib-13.1/360Lib-CMakeReadme.txt); use make command to build executables; 
+      use CMake to generate solution files for Windows platform (check ./360Lib-13.1/360Lib-CMakeReadme.txt); use Visual Studio to build executables;
+      *Note: Suggest use CMake console application to generate makefile or solution files. If using CMake GUI application, enable the option "EXTENSION_360_VIDEO".      
+
+2. Giving the input 360 test sequence is ERP format, the following command is used to encode the video in different projection formats with RA Main10 according to CTC (JVET-L1012)(using QP 27 as an example):
+(1) encode in PERP domain according to 360 CTC;
+./bin/EncoderAppStatic -c  ./cfg/encoder_randomaccess_vtm.cfg -c ./cfg-360Lib/encoder_360_PERP.cfg -c ./cfg-360Lib/per-sequence/360/360test_Trolley.cfg  -c ./cfg-360Lib/per-sequence/360/360test_Trolley_DynamicViewports.cfg --SphFile=./cfg-360Lib/360Lib/sphere_655362.txt -i ./test_seq/Trolley_8192x4096_30fps_8bit_420_erp.yuv --WrapAroundOffset=4432 --CodingFaceWidth=4432 --CodingFaceHeight=2216 --IntraPeriod=32 -b test.bin  --SEIDecodedPictureHash=1 --PrintHexPSNR=1 -o ''  -q 27
+(2) encode in CMP domain according to 360 CTC;
+./bin/EncoderAppStatic -c  ./cfg/encoder_randomaccess_vtm.cfg -c ./cfg-360Lib/encoder_360_CMP.cfg -c ./cfg-360Lib/per-sequence/360/360test_Trolley.cfg  -c ./cfg-360Lib/per-sequence/360/360test_Trolley_DynamicViewports.cfg --SphFile=./cfg-360Lib/360Lib/sphere_655362.txt -i ./test_seq/Trolley_8192x4096_30fps_8bit_420_erp.yuv --CodingFaceWidth=1280 --CodingFaceHeight=1280 --IntraPeriod=32 -b test.bin  --SEIDecodedPictureHash=1 --PrintHexPSNR=1 -o ''  -q 27
+(3) encode in AEP domain according to 360 CTC (JVET-G0051);
+./bin/EncoderAppStatic -c  ./cfg/encoder_randomaccess_vtm.cfg -c ./cfg-360Lib/encoder_360_AEP.cfg -c ./cfg-360Lib/per-sequence/360/360test_Trolley.cfg  -c ./cfg-360Lib/per-sequence/360/360test_Trolley_DynamicViewports.cfg --SphFile=./cfg-360Lib/360Lib/sphere_655362.txt -i ./test_seq/Trolley_8192x4096_30fps_8bit_420_erp.yuv --CodingFaceWidth=4432 --CodingFaceHeight=2216 --IntraPeriod=32 -b test.bin  --SEIDecodedPictureHash=1 --PrintHexPSNR=1 -o ''  -q 27
+(4) encode in padded OHP domain with frame packing option 1(JVET-F0053) according to 360 CTC;
+./bin/EncoderAppStatic -c  ./cfg/encoder_randomaccess_vtm.cfg -c ./cfg-360Lib/encoder_360_COHP.cfg -c ./cfg-360Lib/per-sequence/360/360test_Trolley.cfg  -c ./cfg-360Lib/per-sequence/360/360test_Trolley_DynamicViewports.cfg --SphFile=./cfg-360Lib/360Lib/sphere_655362.txt -i ./test_seq/Trolley_8192x4096_30fps_8bit_420_erp.yuv --CodingFaceWidth=1552 --CodingFaceHeight=1344 --IntraPeriod=32 -b test.bin  --SEIDecodedPictureHash=1 --PrintHexPSNR=1 -o ''  -q 27
+(5) encode in ISP domain with frame packing (JVET-E0029) according to 360 CTC;
+./bin/EncoderAppStatic -c  ./cfg/encoder_randomaccess_vtm.cfg -c ./cfg-360Lib/encoder_360_CISP.cfg -c ./cfg-360Lib/per-sequence/360/360test_Trolley.cfg  -c ./cfg-360Lib/per-sequence/360/360test_Trolley_DynamicViewports.cfg --SphFile=./cfg-360Lib/360Lib/sphere_655362.txt -i ./test_seq/Trolley_8192x4096_30fps_8bit_420_erp.yuv --CodingFaceWidth=952 --CodingFaceHeight=824 --IntraPeriod=32 -b test.bin  --SEIDecodedPictureHash=1 --PrintHexPSNR=1 -o ''  -q 27
+(6) encode in padded EAP-SSP domain with vertical frame packing(JVET-G0097);
+./bin/EncoderAppStatic -c  ./cfg/encoder_randomaccess_vtm.cfg -c ./cfg-360Lib/encoder_360_SSP_vert.cfg -c ./cfg-360Lib/per-sequence/360/360test_Trolley.cfg  -c ./cfg-360Lib/per-sequence/360/360test_Trolley_DynamicViewports.cfg --SphFile=./cfg-360Lib/360Lib/sphere_655362.txt -i ./test_seq/Trolley_8192x4096_30fps_8bit_420_erp.yuv --CodingFaceWidth=1280 --CodingFaceHeight=1280 --IntraPeriod=32 -b test.bin  --SEIDecodedPictureHash=1 --PrintHexPSNR=1 -o ''  -q 27
+(7) encode in ACP domain (JVET-F0025);
+./bin/EncoderAppStatic -c  ./cfg/encoder_randomaccess_vtm.cfg -c ./cfg-360Lib/encoder_360_ACP.cfg -c ./cfg-360Lib/per-sequence/360/360test_Trolley.cfg  -c ./cfg-360Lib/per-sequence/360/360test_Trolley_DynamicViewports.cfg --SphFile=./cfg-360Lib/360Lib/sphere_655362.txt -i ./test_seq/Trolley_8192x4096_30fps_8bit_420_erp.yuv --CodingFaceWidth=1280 --CodingFaceHeight=1280 --IntraPeriod=32 -b test.bin  --SEIDecodedPictureHash=1 --PrintHexPSNR=1 -o ''  -q 27
+(8) encode in RSP domain (JVET-H0056);
+./bin/EncoderAppStatic -c  ./cfg/encoder_randomaccess_vtm.cfg -c ./cfg-360Lib/encoder_360_RSP.cfg -c ./cfg-360Lib/per-sequence/360/360test_Trolley.cfg  -c ./cfg-360Lib/per-sequence/360/360test_Trolley_DynamicViewports.cfg --SphFile=./cfg-360Lib/360Lib/sphere_655362.txt -i ./test_seq/Trolley_8192x4096_30fps_8bit_420_erp.yuv --CodingFaceWidth=1280 --CodingFaceHeight=1280 --IntraPeriod=32 -b test.bin  --SEIDecodedPictureHash=1 --PrintHexPSNR=1 -o ''  -q 27
+(9) encode in padded ECP domain (JVET-G0074);
+./bin/EncoderAppStatic -c  ./cfg/encoder_randomaccess_vtm.cfg -c ./cfg-360Lib/encoder_360_ECP.cfg -c ./cfg-360Lib/per-sequence/360/360test_Trolley.cfg  -c ./cfg-360Lib/per-sequence/360/360test_Trolley_DynamicViewports.cfg --SphFile=./cfg-360Lib/360Lib/sphere_655362.txt -i ./test_seq/Trolley_8192x4096_30fps_8bit_420_erp.yuv --CodingFaceWidth=1280 --CodingFaceHeight=1280 --IntraPeriod=32 -b test.bin  --SEIDecodedPictureHash=1 --PrintHexPSNR=1 -o ''  -q 27
+(10) encode in EAC domain (JVET-G0056);
+./bin/EncoderAppStatic -c  ./cfg/encoder_randomaccess_vtm.cfg -c ./cfg-360Lib/encoder_360_EAC.cfg -c ./cfg-360Lib/per-sequence/360/360test_Trolley.cfg  -c ./cfg-360Lib/per-sequence/360/360test_Trolley_DynamicViewports.cfg --SphFile=./cfg-360Lib/360Lib/sphere_655362.txt -i ./test_seq/Trolley_8192x4096_30fps_8bit_420_erp.yuv --CodingFaceWidth=1280 --CodingFaceHeight=1280 --IntraPeriod=32 -b test.bin  --SEIDecodedPictureHash=1 --PrintHexPSNR=1 -o ''  -q 27
+(11) encode in HEC domain (JVET-K0131);
+./bin/EncoderAppStatic -c  ./cfg/encoder_randomaccess_vtm.cfg -c ./cfg-360Lib/encoder_360_HEC.cfg -c ./cfg-360Lib/per-sequence/360/360test_Trolley.cfg  -c ./cfg-360Lib/per-sequence/360/360test_Trolley_DynamicViewports.cfg --SphFile=./cfg-360Lib/360Lib/sphere_655362.txt -i ./test_seq/Trolley_8192x4096_30fps_8bit_420_erp.yuv --CodingFaceWidth=1280 --CodingFaceHeight=1280 --IntraPeriod=32 -b test.bin  --SEIDecodedPictureHash=1 --PrintHexPSNR=1 -o ''  -q 27
+(12) encode in HCMP domain (JVET-M0452);
+./bin/EncoderAppStatic -c  ./cfg/encoder_randomaccess_vtm.cfg -c ./cfg-360Lib/encoder_180_HCMP.cfg -c ./cfg-360Lib/per-sequence/360/360test_Trolley.cfg  --SphFile=./cfg-360Lib/360Lib/sphere_655362.txt -i ./test_seq/Trolley_8192x4096_30fps_8bit_420_erp.yuv --CodingFaceWidth=1280 --CodingFaceHeight=1280 --IntraPeriod=32 -b test.bin  --SEIDecodedPictureHash=1 --PrintHexPSNR=1 -o ''  -q 27
+(13) encode in Fisheye domain (JCTVC-AE1005);
+./bin/EncoderAppStatic -c  ./cfg/encoder_randomaccess_vtm.cfg -c ./cfg-360Lib/encoder_360_Fisheye.cfg -c ./cfg-360Lib/per-sequence/360/360test_Trolley.cfg  --SphFile=./cfg-360Lib/360Lib/sphere_655362.txt -i ./test_seq/Trolley_8192x4096_30fps_8bit_420_erp.yuv --CodingFaceWidth=1280 --CodingFaceHeight=1280 --IntraPeriod=32 -b test.bin  --SEIDecodedPictureHash=1 --PrintHexPSNR=1 -o ''  -q 27
+(14) encode in GCMP domain (JVET-P0597);
+./bin/EncoderAppStatic -c  ./cfg/encoder_randomaccess_vtm.cfg -c ./cfg-360Lib/encoder_360_GCMP.cfg -c ./cfg-360Lib/per-sequence/360/360test_Trolley.cfg -c ./cfg-360Lib/per-sequence/360/360test_Trolley_DynamicViewports.cfg --SphFile=./cfg-360Lib/360Lib/sphere_655362.txt -i ./test_seq/Trolley_8192x4096_30fps_8bit_420_erp.yuv --CodingFaceWidth=1280 --CodingFaceHeight=1280 --IntraPeriod=32 -b test.bin  --SEIDecodedPictureHash=1 --PrintHexPSNR=1 -o ''  -q 27
+
+The following parameters need to be set carefully for the encoding.
+(1) The CodingFaceWidth and CodingFaceHeight should be set according to Table 3 in JVET-L1012. 
+(2) IntraPeriod should be set according to VTM CTC (e.g. 32 for 30Hz video, 64 for 60Hz video for random access).
+(3) Set parameter "PrintHexPSNR" to 1 to ouptut those high precision PSNR in hex format.
+ 
+For the standalone application App360Convert, the example configuration files are in ./cfg-360Lib/360Lib
+./bin/360ConvertAppStatic -c ./cfg-360Lib/360Lib/360convert_ERP_Cubemap3x2.cfg -c ./cfg-360Lib/per-sequence/360/360test_Trolley.cfg -i ./test_seq/Trolley_8192x4096_30fps_8bit_420_erp.yuv -f 1 -o CMP3x2FromERP.yuv 
+The parameters "ReferenceFaceWidth" and "ReferenceFaceHeight" have to be set when the metrics need to be calculated by the App360Convert application.
+ 
