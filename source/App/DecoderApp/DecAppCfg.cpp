@@ -128,8 +128,9 @@ bool DecAppCfg::parseCfg( int argc, char* argv[] )
   ("targetSubPicIdx",          m_targetSubPicIdx,                     0,           "Specify which subpicture shall be written to output, using subpic index, 0: disabled, subpicIdx=m_targetSubPicIdx-1 \n" )
   ( "UpscaledOutput",          m_upscaledOutput,                          0,       "Upscaled output for RPR" )
 #if GDR_LEAK_TEST
-  ("RandomAccessPos",          m_gdrPocRandomAccess,                    0,         "POC of GDR Random access picture\n" );
+  ("RandomAccessPos",          m_gdrPocRandomAccess,                    0,         "POC of GDR Random access picture\n" )
 #endif // GDR_LEAK_TEST
+  ;
 
   po::setDefaults(opts);
   po::ErrorReporter err;

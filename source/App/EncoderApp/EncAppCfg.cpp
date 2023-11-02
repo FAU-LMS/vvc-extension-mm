@@ -366,11 +366,6 @@ static inline istream& operator >> (istream &in, ScalingListMode &mode)
   return readStrToEnum(strToScalingListMode, sizeof(strToScalingListMode)/sizeof(*strToScalingListMode), in, mode);
 }
 
-static inline istream& operator >> (istream &in, GeodesicMotionModel::Flavor &flavor)
-{
-  return readStrToEnum(strToGedFlavor, sizeof(strToGedFlavor)/sizeof(*strToGedFlavor), in, flavor);
-}
-
 
 
 template <class T>
@@ -1023,7 +1018,7 @@ bool EncAppCfg::parseCfg( int argc, char* argv[] )
   ("GEDA",                                            m_GEDA,                                           false, "Enable geodesic-adaptive motion model (0:off, 1:on)")
   ("Epipole", [this](po::Options &opts, const string &argv, po::ErrorReporter &er) { this->parseEpipole(opts, argv, er); }, "Epipole list entry as (-1, -1, x, y, z).")
   ("MMMVP",                                           m_MMMVP,                                           true, "Enable multi-model motion vector prediction (0:off, 1:on)")
-  ("Projection",                                      m_projectionFct,                                      -1, "Projection function for MM (0:equisolid, 1:calibrated, 2: ERP)")
+  ("Projection",                                      m_projectionFct,                                      2, "Projection function for MM (2: ERP)")
 
   ("AllowDisFracMMVD",                                m_allowDisFracMMVD,                               false, "Disable fractional MVD in MMVD mode adaptively")
   ("AffineAmvr",                                      m_AffineAmvr,                                     false, "Eanble AMVR for affine inter mode")
@@ -3259,9 +3254,6 @@ bool EncAppCfg::parseCfg( int argc, char* argv[] )
     if (firstSliceLossless) // if first slice is lossless
     m_iQP = LOSSLESS_AND_MIXED_LOSSLESS_RD_COST_TEST_QP - ( ( m_internalBitDepth[CHANNEL_TYPE_LUMA] - 8 ) * 6 );
   }
-
-  m_numCalibratedCoeffs = cfg_calibratedProjectionCoefficients.values.size();
-  m_calibratedCoeffsPx = cfg_calibratedProjectionCoefficients.values;
 
   m_uiMaxCUWidth = m_uiMaxCUHeight = m_uiCTUSize;
 
