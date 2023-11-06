@@ -9,7 +9,12 @@ For building, `cmake` is required. On Linux, build using
 mkdir build
 cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release -DEXTENSION_360_VIDEO=1
+make -j
 ```
+
+*Note:* For some `cmake` versions, an issue in internal dependency resolution for multi-thread compilation requires `make -j` to be called twice.
+Do not cancel the first run even after errors are reported.
+To avoid such problems, single-thread compilation is another possible option: `make -j 1`. 
 
 ## Usage
 
@@ -22,6 +27,43 @@ In addition to the standard parameters for VTM-17.2 (EncoderApp) with 360lib int
 * `--MMMVP=0/1`: Activate multi-model motion vector prediction (MM-MVP)
 * `--Projection=`: Set projection format of 360-degree video, set to `2` for equirectangular projection (ERP), others are not tested
 * `--Epipole=-1,-1,x,y,z`: Set epipole for geodesic motion model (x, y, z).
+
+Basic encoder example:
+```shell
+bin/EncoderAppStatic
+-c cfg/encoder_randomaccess_vtm.cfg
+-c cfg-360Lib/encoder_360_ERP.cfg
+--SphFile=cfg-360Lib/360Lib/sphere_655362.txt
+-i Broadway_6144x3072_60fps_8bit_420_erp.yuv
+-b Broadway_2048x1024_60fps_8bit_420_erp.enc
+-wdt 6144
+-hgt 3072
+--InputBitDepth=8
+--InputChromaFormat=420
+--CodingFaceWidth=2048
+--CodingFaceHeight=1024
+--WrapAroundOffset=2048
+-fr 60
+-f 32
+-fs 0
+-q 37
+--MPA=1
+--GED=1
+--ROT=1
+--TAN=0
+--3DT=0
+--MMMVP=1
+--Projection=2
+--Epipole=-1,-1,1.0,0.0,0.0
+```
+
+Basic decoder example:
+```shell
+DecoderAppStatic
+-b Broadway_2048x1024_60fps_8bit_420_erp.enc
+-o Broadway_2048x1024_60fps_8bit_420_erp.enc.yuv
+-d 8
+```
 
 
 ## License
