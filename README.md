@@ -2,6 +2,8 @@
 
 VVC Reference Software VTM-17.2 extension enabling multi-model 360-degree video coding.
 
+* A. Regensky, C. Herglotz, and A. Kaup, "Multi-Model Motion Prediction for 360-Degree Video Compression," *IEEE Access*, vol. 11, pp. 117004-117017, Oct. 2023, doi: [10.1109/ACCESS.2023.3326717](https://doi.org/10.1109/ACCESS.2023.3326717).
+
 ## Build
 
 For building, `cmake` is required. On Linux, build using
